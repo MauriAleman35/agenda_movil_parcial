@@ -3,11 +3,13 @@ import 'package:provider/provider.dart'; // Provider
 import '../providers/role_provider.dart'; // RoleProvider
 
 class CommunicationScreen extends StatefulWidget {
+  const CommunicationScreen({super.key});
+
   @override
-  _CommunicationScreenState createState() => _CommunicationScreenState();
+  CommunicationScreenState createState() => CommunicationScreenState();
 }
 
-class _CommunicationScreenState extends State<CommunicationScreen> {
+class CommunicationScreenState extends State<CommunicationScreen> {
   final List<Map<String, String>> _allCommunications = [
     {
       'title': 'Reunión de padres',

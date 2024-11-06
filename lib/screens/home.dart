@@ -1,4 +1,5 @@
 import 'package:agenda_electronica/screens/communications.dart';
+import 'package:agenda_electronica/screens/ia.dart';
 import 'package:agenda_electronica/screens/parent/task_parent.dart';
 import 'package:agenda_electronica/screens/student/task_student.dart';
 import 'package:agenda_electronica/screens/teacher/attendance_teacher.dart';
@@ -7,40 +8,42 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/role_provider.dart';
 import '../screens/calendar.dart';
-// Importamos la nueva vista
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   // Obtener las vistas según el rol
   List<Widget> _getScreensForRole(String role) {
     switch (role) {
       case 'student':
-        return [
+        return const [
           TasksScreen(),
           CalendarScreen(),
           CommunicationScreen(), // Comunicados del estudiante
         ];
       case 'parent':
-        return [
+        return const [
           TaskParentScreen(),
           CalendarScreen(),
           CommunicationScreen(), // Comunicados del padre
         ];
       case 'teacher':
         return [
-          TaskTeacherScreen(),
+          const TaskTeacherScreen(),
           AttendanceTeacherScreen(),
-          CalendarScreen(),
-          CommunicationScreen(), // Comunicados del profesor
+          const CalendarScreen(),
+          const CommunicationScreen(), // Comunicados del profesor
+          IaScreen(),
         ];
       default:
-        return [Center(child: Text('Pantalla no disponible'))];
+        return const [Center(child: Text('Pantalla no disponible'))];
     }
   }
 
@@ -48,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<BottomNavigationBarItem> _getNavItemsForRole(String role) {
     switch (role) {
       case 'student':
-        return [
+        return const [
           BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Tareas'),
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today), label: 'Calendario'),
@@ -56,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.notifications), label: 'Comunicados'),
         ];
       case 'parent':
-        return [
+        return const [
           BottomNavigationBarItem(
               icon: Icon(Icons.task), label: 'Tareas del Hijo'),
           BottomNavigationBarItem(
@@ -65,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.notifications), label: 'Comunicados'),
         ];
       case 'teacher':
-        return [
+        return const [
           BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Tareas'),
           BottomNavigationBarItem(
               icon: Icon(Icons.checklist), label: 'Asistencia'),
@@ -73,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.calendar_today), label: 'Calendario'),
           BottomNavigationBarItem(
               icon: Icon(Icons.notifications), label: 'Comunicados'),
+          BottomNavigationBarItem(icon: Icon(Icons.auto_awesome), label: 'IA'),
         ];
       default:
         return [];

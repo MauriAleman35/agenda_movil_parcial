@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart'; // Importar la librería de Lottie
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   // Variable para almacenar el rol seleccionado
   String _selectedRole = 'Estudiante'; // Valor inicial
 
@@ -24,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Animación Lottie
-              Container(
+              SizedBox(
                 height: 300, // Ajusta el tamaño según tu diseño
                 child: Lottie.asset(
                   'assets/lootie/loginAnimation.json', // Ruta del asset JSON
@@ -34,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 30), // Espacio entre animación y contenido
 
               // Título Principal
-              Text(
+              const Text(
                 'Sign In',
                 style: TextStyle(
                   fontSize: 32,
@@ -59,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 decoration: InputDecoration(
                   labelText: 'Código',
-                  prefixIcon: Icon(Icons.email_outlined),
+                  prefixIcon: const Icon(Icons.email_outlined),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -72,8 +74,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Contraseña',
-                  prefixIcon: Icon(Icons.lock_outline),
-                  suffixIcon: Icon(Icons.visibility_off),
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: const Icon(Icons.visibility_off),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -97,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 decoration: InputDecoration(
                   labelText: 'Seleccionar Rol',
-                  prefixIcon: Icon(Icons.person_outline),
+                  prefixIcon: const Icon(Icons.person_outline),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

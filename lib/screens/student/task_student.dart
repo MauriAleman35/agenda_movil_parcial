@@ -3,11 +3,13 @@ import 'package:intl/intl.dart';
 import 'dart:async'; // Para el auto-scroll del carrusel
 
 class TasksScreen extends StatefulWidget {
+  const TasksScreen({super.key});
+
   @override
-  _TasksScreenState createState() => _TasksScreenState();
+  TasksScreenState createState() => TasksScreenState();
 }
 
-class _TasksScreenState extends State<TasksScreen> {
+class TasksScreenState extends State<TasksScreen> {
   List<String> notifications = [
     'Entrega de tarea mañana',
     'Examen de Historia el viernes',
@@ -146,16 +148,16 @@ class _TasksScreenState extends State<TasksScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
+          const Row(
             children: [
               CircleAvatar(
                 radius: 30,
                 backgroundImage: NetworkImage('https://i.pravatar.cc/300'),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Hola, Livia Vaccaro',
                     style: TextStyle(
@@ -207,9 +209,9 @@ class _TasksScreenState extends State<TasksScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Descripción:',
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.black54,
                 ),
@@ -270,7 +272,7 @@ class _TasksScreenState extends State<TasksScreen> {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [Colors.black87, Colors.black54],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -362,10 +364,10 @@ class _TasksScreenState extends State<TasksScreen> {
       length: 2,
       child: Column(
         children: [
-          TabBar(
+          const TabBar(
             labelColor: Colors.black,
             unselectedLabelColor: Colors.grey,
-            tabs: const [
+            tabs: [
               Tab(text: 'Todas las Tareas'),
               Tab(text: 'Filtrar por Fecha'),
             ],

@@ -8,11 +8,13 @@ class AttendanceTeacherScreen extends StatelessWidget {
     'Ana Torres',
   ];
 
+  AttendanceTeacherScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registrar Asistencia'),
+        title: const Text('Registrar Asistencia'),
       ),
       body: ListView.builder(
         itemCount: students.length,
@@ -23,7 +25,7 @@ class AttendanceTeacherScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: Icon(Icons.check, color: Colors.green),
+                  icon: const Icon(Icons.check, color: Colors.green),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('${students[index]} presente')),
@@ -31,7 +33,7 @@ class AttendanceTeacherScreen extends StatelessWidget {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.close, color: Colors.red),
+                  icon: const Icon(Icons.close, color: Colors.red),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('${students[index]} ausente')),

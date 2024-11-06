@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TaskTeacherScreen extends StatelessWidget {
+  const TaskTeacherScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -8,8 +10,8 @@ class TaskTeacherScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
               child: Text(
                 'Tareas del Profesor',
                 style: TextStyle(
@@ -20,8 +22,8 @@ class TaskTeacherScreen extends StatelessWidget {
             ),
             Expanded(
               child: ListView(
-                padding: EdgeInsets.all(16.0),
-                children: [
+                padding: const EdgeInsets.all(16.0),
+                children: const [
                   ListTile(
                     leading: Icon(Icons.task),
                     title: Text('Preparar examen de Matemáticas'),
@@ -40,10 +42,10 @@ class TaskTeacherScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Nueva tarea añadida')),
+                    const SnackBar(content: Text('Nueva tarea añadida')),
                   );
                 },
-                child: Text('Añadir Tarea'),
+                child: const Text('Añadir Tarea'),
               ),
             ),
           ],
