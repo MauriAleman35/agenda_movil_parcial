@@ -43,7 +43,7 @@ class AppRoutes {
       case generateCover:
         return MaterialPageRoute(builder: (_) => GenerateCoverScreen());
       case generateQuiz:
-        return MaterialPageRoute(builder: (_) => GenerateQuizScreen());
+        return MaterialPageRoute(builder: (_) => const GenerateQuizScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

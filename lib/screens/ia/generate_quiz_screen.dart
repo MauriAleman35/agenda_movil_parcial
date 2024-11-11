@@ -52,16 +52,13 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
     });
 
     // Simulación de procesamiento (aquí va la llamada a la IA para transcripción y generación del cuestionario)
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
 
     setState(() {
       _isProcessing = false;
       _quizGenerated = true;
-      _quizText = "1. ¿Qué es la fotosíntesis?\nRespuesta: Es el proceso por el cual las plantas...\n\n" +
-          "2. ¿Cuáles son los órganos principales de una planta?\nRespuesta: Raíz, tallo, hojas...\n\n" +
-          "3. ¿Por qué es importante la fotosíntesis?\nRespuesta: Proporciona oxígeno...\n\n" +
-          "4. ¿Qué tipo de organismos realizan fotosíntesis?\nRespuesta: Plantas, algas...\n\n" +
-          "5. ¿Cuál es el pigmento responsable de la fotosíntesis?\nRespuesta: Clorofila.";
+      _quizText =
+          "1. ¿Qué es la fotosíntesis?\nRespuesta: Es el proceso por el cual las plantas...\n\n2. ¿Cuáles son los órganos principales de una planta?\nRespuesta: Raíz, tallo, hojas...\n\n3. ¿Por qué es importante la fotosíntesis?\nRespuesta: Proporciona oxígeno...\n\n4. ¿Qué tipo de organismos realizan fotosíntesis?\nRespuesta: Plantas, algas...\n\n5. ¿Cuál es el pigmento responsable de la fotosíntesis?\nRespuesta: Clorofila.";
     });
   }
 
@@ -79,7 +76,7 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
     if (_quizText != null) {
       Clipboard.setData(ClipboardData(text: _quizText!));
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Cuestionario copiado al portapapeles")),
+        const SnackBar(content: Text("Cuestionario copiado al portapapeles")),
       );
     }
   }
@@ -110,7 +107,7 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Generar Cuestionario'),
+        title: const Text('Generar Cuestionario'),
         backgroundColor: Colors.deepPurple,
       ),
       body: Padding(
@@ -126,7 +123,7 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
                 Colors.purpleAccent,
                 _startRecording,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildActionButton(
                 context,
                 'Subir Archivo de Audio',
@@ -136,11 +133,11 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
               ),
             ],
             if (_isRecording) ...[
-              Text(
+              const Text(
                 'Grabando...',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildActionButton(
                 context,
                 'Detener Grabación',
@@ -150,31 +147,31 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
               ),
             ],
             if (_isProcessing) ...[
-              SizedBox(height: 30),
-              Center(child: CircularProgressIndicator()),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 30),
+              const Center(child: CircularProgressIndicator()),
+              const SizedBox(height: 10),
+              const Text(
                 'Procesando el audio...',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16),
               ),
             ],
             if (_quizGenerated && _quizText != null) ...[
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'Cuestionario Generado:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Expanded(
                 child: SingleChildScrollView(
                   child: Text(
                     _quizText!,
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               _buildActionButton(
                 context,
                 'Copiar Cuestionario',
@@ -182,7 +179,7 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
                 Colors.green,
                 _copyToClipboard,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildActionButton(
                 context,
                 'Descargar como PDF',
@@ -190,7 +187,7 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
                 Colors.deepPurple,
                 _downloadAsPdf,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildActionButton(
                 context,
                 'Reprocesar Audio',
@@ -217,14 +214,14 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
       icon: Icon(icon, color: Colors.white),
       label: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
       ),
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         backgroundColor: color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),

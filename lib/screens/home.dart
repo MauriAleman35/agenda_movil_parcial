@@ -4,6 +4,7 @@ import 'package:agenda_electronica/screens/parent/task_parent.dart';
 import 'package:agenda_electronica/screens/student/task_student.dart';
 import 'package:agenda_electronica/screens/teacher/attendance_teacher.dart';
 import 'package:agenda_electronica/screens/teacher/task_teacher.dart';
+// import 'package:agenda_electronica/service/ia_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/role_provider.dart';
@@ -18,6 +19,22 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fetchTestMessage(); // Llamar a fetchTestMessage al iniciar el estado
+  // }
+
+  // void fetchTestMessage() async {
+  //   final result = await IaService.getTestMessage();
+
+  //   if (result.containsKey("message")) {
+  //     print("Mensaje de prueba: ${result['message']}");
+  //   } else {
+  //     print("Error: ${result['error']}");
+  //   }
+  // }
 
   // Obtener las vistas según el rol
   List<Widget> _getScreensForRole(String role) {

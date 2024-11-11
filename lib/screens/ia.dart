@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class IaScreen extends StatelessWidget {
+  const IaScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Opciones de IA'),
+        title: const Text('Opciones de IA'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
@@ -22,7 +24,7 @@ class IaScreen extends StatelessWidget {
                 color: Colors.grey[800],
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             _buildOptionButton(
               context,
               'Generar Carátulas con IA',
@@ -32,7 +34,7 @@ class IaScreen extends StatelessWidget {
                 Navigator.pushNamed(context, '/generate-cover');
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildOptionButton(
               context,
               'Generar Cuestionarios con IA',
@@ -53,7 +55,7 @@ class IaScreen extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: 18.0, horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 24.0),
         backgroundColor: color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -65,10 +67,10 @@ class IaScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, color: Colors.white, size: 28),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.white,
