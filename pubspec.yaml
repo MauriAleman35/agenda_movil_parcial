@@ -43,6 +43,9 @@ dependencies:
   path_provider: ^2.1.5
   pdf: ^3.11.1
   share_plus: ^10.1.2
+  file_picker: ^8.1.4
+  flutter_sound: ^9.17.0
+  flutter_markdown: ^0.7.4+1
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,12 @@
+import 'package:agenda_electronica/service/ia_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Para copiar al portapapeles
+import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 class GenerateQuizScreen extends StatefulWidget {
@@ -13,75 +18,121 @@ class GenerateQuizScreen extends StatefulWidget {
 
 class GenerateQuizScreenState extends State<GenerateQuizScreen> {
   bool _isRecording = false;
+  bool _isPaused = false;
   bool _isProcessing = false;
   bool _quizGenerated = false;
   String? _quizText;
+  String? _audioFilePath;
+  File? _pdfFile;
+  final IaService iaService = IaService();
+  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
 
-  void _startRecording() {
+  @override
+  void initState() {
+    super.initState();
+    _initializeRecorder();
+    _requestPermissions(); // Solicitar permisos en tiempo de ejecución
+  }
+
+  Future<void> _requestPermissions() async {
+    await Permission.microphone.request();
+    await Permission.storage.request();
+  }
+
+  Future<void> _initializeRecorder() async {
+    await _recorder.openRecorder();
+    await _recorder.setSubscriptionDuration(const Duration(milliseconds: 500));
+  }
+
+  Future<void> _startRecording() async {
     setState(() {
       _isRecording = true;
       _isProcessing = false;
       _quizGenerated = false;
       _quizText = null;
     });
-    // Lógica para iniciar la grabación de audio
+    final appDocDir = await getApplicationDocumentsDirectory();
+    _audioFilePath = '${appDocDir.path}/recording.aac';
+    await _recorder.startRecorder(toFile: _audioFilePath);
   }
 
-  void _stopRecording() {
+  Future<void> _pauseRecording() async {
+    if (_isPaused) {
+      await _recorder.resumeRecorder();
+    } else {
+      await _recorder.pauseRecorder();
+    }
     setState(() {
-      _isRecording = false;
-      _isProcessing = true;
-    });
-    // Lógica para detener la grabación y procesar el audio
-    _processAudio();
-  }
-
-  void _uploadAudio() {
-    setState(() {
-      _isProcessing = true;
-      _quizGenerated = false;
-      _quizText = null;
-    });
-    // Lógica para subir un archivo de audio
-    _processAudio();
-  }
-
-  void _processAudio() async {
-    setState(() {
-      _isProcessing = true;
-    });
-
-    // Simulación de procesamiento (aquí va la llamada a la IA para transcripción y generación del cuestionario)
-    await Future.delayed(const Duration(seconds: 3));
-
-    setState(() {
-      _isProcessing = false;
-      _quizGenerated = true;
-      _quizText =
-          "1. ¿Qué es la fotosíntesis?\nRespuesta: Es el proceso por el cual las plantas...\n\n2. ¿Cuáles son los órganos principales de una planta?\nRespuesta: Raíz, tallo, hojas...\n\n3. ¿Por qué es importante la fotosíntesis?\nRespuesta: Proporciona oxígeno...\n\n4. ¿Qué tipo de organismos realizan fotosíntesis?\nRespuesta: Plantas, algas...\n\n5. ¿Cuál es el pigmento responsable de la fotosíntesis?\nRespuesta: Clorofila.";
+      _isPaused = !_isPaused;
     });
   }
 
-  void _reprocessAudio() {
-    setState(() {
-      _isProcessing = true;
-      _quizGenerated = false;
-      _quizText = null;
-    });
-    // Lógica para reprocesar el audio en caso de error
-    _processAudio();
-  }
-
-  void _copyToClipboard() {
-    if (_quizText != null) {
-      Clipboard.setData(ClipboardData(text: _quizText!));
+  Future<void> _stopRecording() async {
+    try {
+      await _recorder.stopRecorder();
+      setState(() {
+        _isRecording = false;
+        _isProcessing = true;
+      });
+      _processAudio();
+    } catch (e) {
+      print("Error al detener la grabación: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Cuestionario copiado al portapapeles")),
+        const SnackBar(content: Text("Error al detener la grabación.")),
       );
     }
   }
 
-  Future<void> _downloadAsPdf() async {
+  Future<void> _uploadAudio() async {
+    final result = await FilePicker.platform.pickFiles(type: FileType.audio);
+    if (result != null) {
+      setState(() {
+        _isProcessing = true;
+        _quizGenerated = false;
+        _quizText = null;
+        _audioFilePath = result.files.single.path;
+      });
+      _processAudio();
+    }
+  }
+
+  void _processAudio() async {
+    if (_audioFilePath == null) {
+      setState(() {
+        _isProcessing = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("No se ha seleccionado ningún archivo de audio.")),
+      );
+      return;
+    }
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    try {
+      List<String> questions = await iaService.generateQuiz(_audioFilePath!);
+      setState(() {
+        _isProcessing = false;
+        _quizGenerated = true;
+        _quizText = questions.join('\n\n');
+      });
+      await _createPdf();
+    } catch (e) {
+      setState(() {
+        _isProcessing = false;
+        _quizGenerated = false;
+        _quizText = "Error al generar el cuestionario: $e";
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error en el procesamiento del audio: $e")),
+      );
+    }
+  }
+
+  Future<void> _createPdf() async {
     if (_quizText != null) {
       final pdf = pw.Document();
       pdf.addPage(
@@ -93,14 +144,36 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
       );
 
       final output = await getTemporaryDirectory();
-      final file = File("${output.path}/cuestionario.pdf");
-      await file.writeAsBytes(await pdf.save());
+      _pdfFile = File("${output.path}/cuestionario.pdf");
+      await _pdfFile!.writeAsBytes(await pdf.save());
+    }
+  }
 
+  Future<void> _sharePdf() async {
+    if (_pdfFile != null) {
+      await Share.shareXFiles([XFile(_pdfFile!.path)],
+          text: 'Cuestionario generado');
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text("Cuestionario guardado como PDF en ${file.path}")),
+        const SnackBar(
+            content: Text("Primero debes generar el cuestionario en PDF")),
       );
     }
+  }
+
+  void _copyToClipboard() {
+    if (_quizText != null) {
+      Clipboard.setData(ClipboardData(text: _quizText!));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Cuestionario copiado al portapapeles")),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _recorder.closeRecorder();
+    super.dispose();
   }
 
   @override
@@ -136,6 +209,14 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
               const Text(
                 'Grabando...',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              _buildActionButton(
+                context,
+                _isPaused ? 'Reanudar Grabación' : 'Pausar Grabación',
+                _isPaused ? Icons.play_arrow : Icons.pause,
+                Colors.orangeAccent,
+                _pauseRecording,
               ),
               const SizedBox(height: 10),
               _buildActionButton(
@@ -182,18 +263,10 @@ class GenerateQuizScreenState extends State<GenerateQuizScreen> {
               const SizedBox(height: 10),
               _buildActionButton(
                 context,
-                'Descargar como PDF',
-                Icons.picture_as_pdf,
+                'Compartir como PDF',
+                Icons.share,
                 Colors.deepPurple,
-                _downloadAsPdf,
-              ),
-              const SizedBox(height: 10),
-              _buildActionButton(
-                context,
-                'Reprocesar Audio',
-                Icons.refresh,
-                Colors.orange,
-                _reprocessAudio,
+                _sharePdf,
               ),
             ],
           ],
