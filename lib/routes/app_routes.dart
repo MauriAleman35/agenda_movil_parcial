@@ -23,21 +23,46 @@ class AppRoutes {
   static const String generateQuiz = '/generate-quiz';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    // Verifica si hay argumentos pasados en RouteSettings
+    final args = settings.arguments as Map<String, dynamic>?;
+
     switch (settings.name) {
       case login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case home:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(
+          builder: (_) => HomeScreen(
+            role:
+                args?['role'] ?? 'student', // Pasar el rol desde los argumentos
+            userData: args?['userData'] ?? {}, // Pasar los datos del usuario
+          ),
+        );
       case calendar:
         return MaterialPageRoute(builder: (_) => const CalendarScreen());
       case taskStudent:
-        return MaterialPageRoute(builder: (_) => const TasksScreen());
+        return MaterialPageRoute(
+          builder: (_) => TasksScreen(
+            userData: args?['userData'] ?? {}, // Pasar los datos del usuario
+          ),
+        );
       case taskTeacher:
-        return MaterialPageRoute(builder: (_) => const TaskTeacherScreen());
+        return MaterialPageRoute(
+          builder: (_) => TaskTeacherScreen(
+            userData: args?['userData'] ?? {}, // Pasar los datos del usuario
+          ),
+        );
       case attendanceTeacher:
-        return MaterialPageRoute(builder: (_) => AttendanceTeacherScreen());
+        return MaterialPageRoute(
+          builder: (_) => AttendanceTeacherScreen(
+            userData: args?['userData'] ?? {}, // Pasar los datos del usuario
+          ),
+        );
       case taskParent:
-        return MaterialPageRoute(builder: (_) => const TaskParentScreen());
+        return MaterialPageRoute(
+          builder: (_) => TaskParentScreen(
+            userData: args?['userData'] ?? {}, // Pasar los datos del usuario
+          ),
+        );
       case ia:
         return MaterialPageRoute(builder: (_) => IaScreen());
       case generateCover:

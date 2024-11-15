@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'dart:async'; // Para el auto-scroll del carrusel
 
 class TasksScreen extends StatefulWidget {
-  const TasksScreen({super.key});
+  final Map<String, dynamic> userData;
+
+  const TasksScreen({super.key, required this.userData});
 
   @override
   TasksScreenState createState() => TasksScreenState();
@@ -148,27 +150,23 @@ class TasksScreenState extends State<TasksScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Row(
+          Row(
             children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage('https://i.pravatar.cc/300'),
-              ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hola, Livia Vaccaro',
-                    style: TextStyle(
+                    'Hola, ${widget.userData['name']}', // Usa el nombre del estudiante
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
                   Text(
-                    'Bienvenido a tu lista de tareas',
-                    style: TextStyle(
+                    'Curso: ${widget.userData['curso']}', // Usa el curso del estudiante
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
                     ),

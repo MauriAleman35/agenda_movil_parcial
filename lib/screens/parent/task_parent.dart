@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 
 class TaskParentScreen extends StatelessWidget {
-  const TaskParentScreen({super.key});
+  final Map<String, dynamic> userData; // Añade esta línea
+
+  const TaskParentScreen(
+      {super.key, required this.userData}); // Modifica el constructor
 
   @override
   Widget build(BuildContext context) {
+    // Aquí puedes usar userData para personalizar la vista
     return Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(16.0),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Tareas del Hijo',
-                style: TextStyle(
+                'Tareas del Hijo (${userData['name']})', // Muestra el nombre del hijo
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),

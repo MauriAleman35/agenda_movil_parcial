@@ -1,5 +1,10 @@
+import 'package:agenda_electronica/service/student_service.dart';
+import 'package:agenda_electronica/service/teacher_student.dart';
+import 'package:agenda_electronica/service/tutor_service.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart'; // Importar la librería de Lottie
+import 'package:provider/provider.dart';
+import 'package:lottie/lottie.dart';
+import '../providers/role_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,33 +14,95 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  // Variable para almacenar el rol seleccionado
-  String _selectedRole = 'Estudiante'; // Valor inicial
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _carnetController = TextEditingController();
 
-  // Opciones de roles disponibles
-  final List<String> _roles = ['Estudiante', 'Profesor', 'Padre de Familia'];
+  String _selectedRole = 'Estudiante';
+  final List<String> _roles = ['Estudiante', 'Profesor', 'Tutor'];
+  bool _isLoading = false;
+
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final email = _emailController.text.trim();
+    final carnet = _carnetController.text.trim();
+
+    if (email.isEmpty || carnet.isEmpty) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor ingrese ambos campos')),
+      );
+      return;
+    }
+
+    Map<String, dynamic> result = {};
+    final roleProvider = context.read<RoleProvider>();
+
+    if (_selectedRole == 'Estudiante') {
+      result = await StudentsService.loginStudent(email, carnet);
+      if (!result.containsKey('error')) {
+        roleProvider.setRole('student');
+        Navigator.pushReplacementNamed(
+          context,
+          '/home',
+          arguments: {'role': 'student', 'userData': result},
+        );
+      }
+    } else if (_selectedRole == 'Profesor') {
+      result = await TeachersService.loginTeacher(email, carnet);
+      if (!result.containsKey('error')) {
+        roleProvider.setRole('teacher');
+        Navigator.pushReplacementNamed(
+          context,
+          '/home',
+          arguments: {'role': 'teacher', 'userData': result},
+        );
+      }
+    } else if (_selectedRole == 'Tutor') {
+      result = await TutorsService.loginTutor(email, carnet);
+      if (!result.containsKey('error')) {
+        roleProvider.setRole('tutor');
+        Navigator.pushReplacementNamed(
+          context,
+          '/home',
+          arguments: {'role': 'tutor', 'userData': result},
+        );
+      }
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (result.containsKey('error')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result['error'])),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Fondo blanco
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 50.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Animación Lottie
               SizedBox(
-                height: 300, // Ajusta el tamaño según tu diseño
+                height: 300,
                 child: Lottie.asset(
-                  'assets/lootie/loginAnimation.json', // Ruta del asset JSON
+                  'assets/lootie/loginAnimation.json',
                   fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(height: 30), // Espacio entre animación y contenido
-
-              // Título Principal
+              const SizedBox(height: 30),
               const Text(
                 'Sign In',
                 style: TextStyle(
@@ -45,8 +112,6 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-
-              // Subtítulo
               Text(
                 "Hola bienvenido a tu Agenda Electrónica",
                 textAlign: TextAlign.center,
@@ -56,36 +121,31 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 40),
-
-              // Campo de Email / Código
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Código',
-                  prefixIcon: const Icon(Icons.email_outlined),
+                  labelText: 'Email',
+                  prefixIcon: const Icon(Icons.email),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Campo de Contraseña
               TextField(
+                controller: _carnetController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: 'Contraseña',
+                  labelText: 'Carnet',
                   prefixIcon: const Icon(Icons.lock_outline),
-                  suffixIcon: const Icon(Icons.visibility_off),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Dropdown para seleccionar el rol
               DropdownButtonFormField<String>(
-                value: _selectedRole, // Rol inicial
+                value: _selectedRole,
                 items: _roles.map((String role) {
                   return DropdownMenuItem<String>(
                     value: role,
@@ -94,7 +154,7 @@ class LoginScreenState extends State<LoginScreen> {
                 }).toList(),
                 onChanged: (String? newValue) {
                   setState(() {
-                    _selectedRole = newValue!; // Actualiza el rol seleccionado
+                    _selectedRole = newValue!;
                   });
                 },
                 decoration: InputDecoration(
@@ -106,40 +166,24 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Olvidó contraseña
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    'Forgot Password?',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Botón de Iniciar Sesión
               ElevatedButton(
-                onPressed: () {
-                  // Lógica de navegación según el rol seleccionado
-                  Navigator.pushReplacementNamed(context, '/home');
-                },
+                onPressed: _isLoading ? null : _login,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black, // Botón negro
+                  backgroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 100, vertical: 16),
                 ),
-                child: const Text(
-                  'Sign In',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        'Sign In',
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
               ),
-              const SizedBox(height: 50), // Espacio final para estética
+              const SizedBox(height: 50),
             ],
           ),
         ),

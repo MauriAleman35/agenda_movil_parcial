@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AttendanceTeacherScreen extends StatelessWidget {
+  final Map<String, dynamic> userData; // Añade esta línea
   final List<String> students = [
     'Juan Pérez',
     'María García',
@@ -8,13 +9,15 @@ class AttendanceTeacherScreen extends StatelessWidget {
     'Ana Torres',
   ];
 
-  AttendanceTeacherScreen({super.key});
+  AttendanceTeacherScreen(
+      {super.key, required this.userData}); // Modifica el constructor
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registrar Asistencia'),
+        title: Text(
+            'Registrar Asistencia (${userData['name']})'), // Muestra el nombre del profesor
       ),
       body: ListView.builder(
         itemCount: students.length,

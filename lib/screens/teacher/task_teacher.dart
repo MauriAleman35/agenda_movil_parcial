@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class TaskTeacherScreen extends StatelessWidget {
-  const TaskTeacherScreen({super.key});
+  final Map<String, dynamic> userData; // Añade esta línea
+
+  const TaskTeacherScreen(
+      {super.key, required this.userData}); // Modifica el constructor
 
   @override
   Widget build(BuildContext context) {
@@ -10,11 +13,11 @@ class TaskTeacherScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(16.0),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Tareas del Profesor',
-                style: TextStyle(
+                'Tareas del Profesor (${userData['name']})', // Muestra el nombre del profesor
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
